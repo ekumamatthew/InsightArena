@@ -165,6 +165,53 @@ pub fn get_market(env: &Env, market_id: u64) -> Result<Market, InsightArenaError
     Ok(market)
 }
 
+/// Return the total number of markets ever created (0 before any are made).
+/// Extends the counter TTL on every call.
+pub fn get_market_count(env: &Env) -> u64 {
+    let count = load_market_count(env);
+    // Only bump when the key actually exists — extend_ttl panics on missing keys.
+    if env.storage().persistent().has(&DataKey::MarketCount) {
+        bump_counter(env);
+    }
+    count
+}
+
+/// Return a paginated slice of markets in creation order.
+///
+/// - `start` is the 1-based market ID to begin from (inclusive).
+/// - `limit` is capped at 50 to bound simulation cost.
+/// - Markets that have been deleted from storage are silently skipped.
+/// - Returns an empty `Vec` when `start` exceeds the current market count.
+pub fn list_markets(env: &Env, start: u64, limit: u32) -> Vec<Market> {
+    const MAX_LIMIT: u32 = 50;
+    let effective_limit = if limit > MAX_LIMIT { MAX_LIMIT } else { limit };
+
+    let total = get_market_count(env);
+    let mut result: Vec<Market> = Vec::new(env);
+
+    if start == 0 || start > total || effective_limit == 0 {
+        return result;
+    }
+
+    let mut collected: u32 = 0;
+    let mut id = start;
+
+    while id <= total && collected < effective_limit {
+        if let Some(market) = env
+            .storage()
+            .persistent()
+            .get::<DataKey, Market>(&DataKey::Market(id))
+        {
+            bump_market(env, id);
+            result.push_back(market);
+            collected += 1;
+        }
+        id += 1;
+    }
+
+    result
+}
+
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
 #[cfg(test)]
@@ -302,5 +349,130 @@ mod market_tests {
 
         let result = client.try_create_market(&creator, &p);
         assert!(matches!(result, Err(Ok(InsightArenaError::StakeTooLow))));
+    }
+
+    // ── get_market ────────────────────────────────────────────────────────────
+
+    #[test]
+    fn get_market_returns_correct_market() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+        let creator = Address::generate(&env);
+
+        let id = client.create_market(&creator, &default_params(&env));
+        let market = client.get_market(&id);
+        assert_eq!(market.market_id, id);
+        assert_eq!(market.creator, creator);
+    }
+
+    #[test]
+    fn get_market_returns_not_found_for_missing_id() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+
+        let result = client.try_get_market(&99_u64);
+        assert!(matches!(result, Err(Ok(InsightArenaError::MarketNotFound))));
+    }
+
+    // ── get_market_count ──────────────────────────────────────────────────────
+
+    #[test]
+    fn get_market_count_zero_before_any_market() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+
+        assert_eq!(client.get_market_count(), 0);
+    }
+
+    #[test]
+    fn get_market_count_increments_with_each_market() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+        let creator = Address::generate(&env);
+
+        client.create_market(&creator, &default_params(&env));
+        assert_eq!(client.get_market_count(), 1);
+
+        client.create_market(&creator, &default_params(&env));
+        assert_eq!(client.get_market_count(), 2);
+    }
+
+    // ── list_markets ──────────────────────────────────────────────────────────
+
+    #[test]
+    fn list_markets_empty_when_no_markets() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+
+        let list = client.list_markets(&1_u64, &10_u32);
+        assert_eq!(list.len(), 0);
+    }
+
+    #[test]
+    fn list_markets_returns_all_when_within_limit() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+        let creator = Address::generate(&env);
+
+        for _ in 0..3 {
+            client.create_market(&creator, &default_params(&env));
+        }
+
+        let list = client.list_markets(&1_u64, &10_u32);
+        assert_eq!(list.len(), 3);
+        assert_eq!(list.get(0).unwrap().market_id, 1);
+        assert_eq!(list.get(2).unwrap().market_id, 3);
+    }
+
+    #[test]
+    fn list_markets_respects_pagination_start() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+        let creator = Address::generate(&env);
+
+        for _ in 0..5 {
+            client.create_market(&creator, &default_params(&env));
+        }
+
+        // Start from market ID 3, take up to 10
+        let list = client.list_markets(&3_u64, &10_u32);
+        assert_eq!(list.len(), 3); // IDs 3, 4, 5
+        assert_eq!(list.get(0).unwrap().market_id, 3);
+    }
+
+    #[test]
+    fn list_markets_caps_at_max_limit_50() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+        let creator = Address::generate(&env);
+
+        for _ in 0..60 {
+            client.create_market(&creator, &default_params(&env));
+        }
+
+        let list = client.list_markets(&1_u64, &100_u32); // ask for 100, should get 50
+        assert_eq!(list.len(), 50);
+    }
+
+    #[test]
+    fn list_markets_empty_when_start_out_of_bounds() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let client = deploy(&env);
+        let creator = Address::generate(&env);
+
+        client.create_market(&creator, &default_params(&env));
+
+        // start > total count → empty
+        let list = client.list_markets(&99_u64, &10_u32);
+        assert_eq!(list.len(), 0);
     }
 }

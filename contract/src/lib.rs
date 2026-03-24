@@ -10,7 +10,7 @@ pub use crate::errors::InsightArenaError;
 pub use crate::market::CreateMarketParams;
 pub use crate::storage_types::{DataKey, InviteCode, Market, Prediction, Season, UserProfile};
 
-use soroban_sdk::{contract, contractimpl, Address, Env};
+use soroban_sdk::{contract, contractimpl, Address, Env, Vec};
 
 #[contract]
 pub struct InsightArenaContract;
@@ -74,6 +74,20 @@ impl InsightArenaContract {
     /// Fetch a market by ID. Returns `MarketNotFound` if it does not exist.
     pub fn get_market(env: Env, market_id: u64) -> Result<Market, InsightArenaError> {
         market::get_market(&env, market_id)
+    }
+
+    /// Return the total number of markets ever created (0 if none yet).
+    pub fn get_market_count(env: Env) -> u64 {
+        market::get_market_count(&env)
+    }
+
+    /// Return a paginated list of markets in creation order.
+    ///
+    /// - `start`: 1-based market ID to begin from (inclusive).
+    /// - `limit`: maximum markets to return; hard-capped at 50.
+    /// - Returns an empty `Vec` when `start` exceeds the market count.
+    pub fn list_markets(env: Env, start: u64, limit: u32) -> Vec<Market> {
+        market::list_markets(&env, start, limit)
     }
 }
 
