@@ -633,7 +633,9 @@ pub fn batch_distribute_payouts(
 
         stored_prediction.payout_claimed = true;
         stored_prediction.payout_amount = net_payout;
-        env.storage().persistent().set(&prediction_key, &stored_prediction);
+        env.storage()
+            .persistent()
+            .set(&prediction_key, &stored_prediction);
         bump_prediction(env, market_id, &stored_prediction.predictor);
 
         update_winner_profile(env, &stored_prediction.predictor, net_payout)?;
