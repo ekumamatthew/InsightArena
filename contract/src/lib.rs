@@ -179,6 +179,18 @@ impl InsightArenaContract {
     ) -> Result<i128, InsightArenaError> {
         prediction::claim_payout(&env, predictor, market_id)
     }
+
+    /// Batch distribute payouts for all unclaimed winning predictions in a
+    /// resolved market. Callable only by admin or oracle.
+    ///
+    /// Returns the number of winner payouts processed in this invocation.
+    pub fn batch_distribute_payouts(
+        env: Env,
+        caller: Address,
+        market_id: u64,
+    ) -> Result<u32, InsightArenaError> {
+        prediction::batch_distribute_payouts(&env, caller, market_id)
+    }
 }
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
