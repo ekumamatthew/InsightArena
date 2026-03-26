@@ -3,6 +3,7 @@ use soroban_sdk::{symbol_short, Address, Env, Symbol, Vec};
 use crate::config::{self, PERSISTENT_BUMP, PERSISTENT_THRESHOLD};
 use crate::errors::InsightArenaError;
 use crate::escrow;
+use crate::season;
 use crate::storage_types::{DataKey, Market, Prediction, UserProfile};
 
 // ── TTL helpers ───────────────────────────────────────────────────────────────
@@ -152,6 +153,7 @@ fn update_winner_profile(
 
     env.storage().persistent().set(&user_key, &profile);
     bump_user(env, predictor);
+    season::track_user_profile(env, predictor);
     Ok(())
 }
 
@@ -276,6 +278,7 @@ pub fn submit_prediction(
 
     env.storage().persistent().set(&user_key, &profile);
     bump_user(env, &predictor);
+    season::track_user_profile(env, &predictor);
 
     // ── Emit PredictionSubmitted event ────────────────────────────────────────
     emit_prediction_submitted(env, market_id, &predictor, &chosen_outcome, stake_amount);
@@ -518,6 +521,7 @@ pub fn claim_payout(
 
     env.storage().persistent().set(&user_key, &profile);
     bump_user(env, &predictor);
+    season::track_user_profile(env, &predictor);
 
     emit_payout_claimed(
         env,

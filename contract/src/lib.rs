@@ -7,6 +7,7 @@ pub mod invite;
 pub mod market;
 pub mod oracle;
 pub mod prediction;
+pub mod season;
 pub mod storage_types;
 
 pub use crate::config::Config;
