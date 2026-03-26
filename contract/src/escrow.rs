@@ -1,7 +1,16 @@
 use soroban_sdk::{token, Address, Env};
 
-use crate::config;
+use crate::config::{self, PERSISTENT_BUMP, PERSISTENT_THRESHOLD};
 use crate::errors::InsightArenaError;
+use crate::storage_types::DataKey;
+
+fn bump_treasury(env: &Env) {
+    env.storage().persistent().extend_ttl(
+        &DataKey::Treasury,
+        PERSISTENT_THRESHOLD,
+        PERSISTENT_BUMP,
+    );
+}
 
 /// Transfer `amount` stroops from `predictor` into the contract's escrow.
 ///
@@ -69,15 +78,35 @@ pub fn release_payout(env: &Env, to: &Address, amount: i128) -> Result<(), Insig
     Ok(())
 }
 
+pub(crate) fn add_to_treasury_balance(env: &Env, amount: i128) {
+    if amount <= 0 {
+        return;
+    }
+
+    let current_balance: i128 = env
+        .storage()
+        .persistent()
+        .get(&DataKey::Treasury)
+        .unwrap_or(0);
+
+    let next_balance = current_balance
+        .checked_add(amount)
+        .expect("treasury balance overflow");
+
+    env.storage().persistent().set(&DataKey::Treasury, &next_balance);
+    bump_treasury(env);
+}
+
 #[cfg(test)]
 mod escrow_tests {
     use soroban_sdk::testutils::Address as _;
     use soroban_sdk::token::{Client as TokenClient, StellarAssetClient};
     use soroban_sdk::{Address, Env};
 
+    use crate::storage_types::DataKey;
     use crate::{InsightArenaContract, InsightArenaContractClient, InsightArenaError};
 
-    use super::{lock_stake, release_payout};
+    use super::{add_to_treasury_balance, lock_stake, release_payout};
 
     fn register_token(env: &Env) -> Address {
         let token_admin = Address::generate(env);
@@ -96,6 +125,15 @@ mod escrow_tests {
 
     fn fund(env: &Env, xlm_token: &Address, recipient: &Address, amount: i128) {
         StellarAssetClient::new(env, xlm_token).mint(recipient, &amount);
+    }
+
+    fn treasury_balance(env: &Env, contract_id: &Address) -> i128 {
+        env.as_contract(contract_id, || {
+            env.storage()
+                .persistent()
+                .get(&DataKey::Treasury)
+                .unwrap_or(0_i128)
+        })
     }
 
     #[test]
@@ -208,5 +246,35 @@ mod escrow_tests {
 
         let result = env.as_contract(&client.address, || release_payout(&env, &recipient, 0));
         assert_eq!(result, Err(InsightArenaError::InvalidInput));
+    }
+
+    #[test]
+    fn test_add_treasury_starts_at_zero() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let xlm_token = register_token(&env);
+        let client = deploy(&env, &xlm_token);
+
+        assert_eq!(treasury_balance(&env, &client.address), 0);
+
+        env.as_contract(&client.address, || add_to_treasury_balance(&env, 1_000_000));
+
+        assert_eq!(treasury_balance(&env, &client.address), 1_000_000);
+    }
+
+    #[test]
+    fn test_add_treasury_multiple_increments() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let xlm_token = register_token(&env);
+        let client = deploy(&env, &xlm_token);
+
+        env.as_contract(&client.address, || {
+            add_to_treasury_balance(&env, 1_000_000);
+            add_to_treasury_balance(&env, 2_500_000);
+            add_to_treasury_balance(&env, 500_000);
+        });
+
+        assert_eq!(treasury_balance(&env, &client.address), 4_000_000);
     }
 }
