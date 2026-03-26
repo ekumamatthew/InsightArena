@@ -1,6 +1,6 @@
 {
   "generators": {
-    "address": 9,
+    "address": 6,
     "nonce": 0
   },
   "auth": [
@@ -40,7 +40,7 @@
                 {
                   "i128": {
                     "hi": 0,
-                    "lo": 100000000
+                    "lo": 20000000
                   }
                 }
               ]
@@ -68,7 +68,7 @@
                 {
                   "i128": {
                     "hi": 0,
-                    "lo": 50000000
+                    "lo": 20000000
                   }
                 },
                 {
@@ -102,7 +102,7 @@
                 {
                   "i128": {
                     "hi": 0,
-                    "lo": 50000000
+                    "lo": 10000000
                   }
                 }
               ]
@@ -131,7 +131,7 @@
                 {
                   "i128": {
                     "hi": 0,
-                    "lo": 50000000
+                    "lo": 10000000
                   }
                 }
               ]
@@ -153,7 +153,7 @@
                     {
                       "i128": {
                         "hi": 0,
-                        "lo": 50000000
+                        "lo": 10000000
                       }
                     }
                   ]
@@ -165,6 +165,91 @@
         }
       ]
     ],
+    [
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+        {
+          "function": {
+            "contract_fn": {
+              "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+              "function_name": "create_season",
+              "args": [
+                {
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
+                },
+                {
+                  "u64": 201
+                },
+                {
+                  "u64": 300
+                },
+                {
+                  "i128": {
+                    "hi": 0,
+                    "lo": 10000000
+                  }
+                }
+              ]
+            }
+          },
+          "sub_invocations": []
+        }
+      ],
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+        {
+          "function": {
+            "contract_fn": {
+              "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+              "function_name": "create_season",
+              "args": [
+                {
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
+                },
+                {
+                  "u64": 201
+                },
+                {
+                  "u64": 300
+                },
+                {
+                  "i128": {
+                    "hi": 0,
+                    "lo": 10000000
+                  }
+                }
+              ]
+            }
+          },
+          "sub_invocations": [
+            {
+              "function": {
+                "contract_fn": {
+                  "contract_address": "CDLDVFKHEZ2RVB3NG4UQA4VPD3TSHV6XMHXMHP2BSGCJ2IIWVTOHGDSG",
+                  "function_name": "transfer",
+                  "args": [
+                    {
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
+                    },
+                    {
+                      "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
+                    },
+                    {
+                      "i128": {
+                        "hi": 0,
+                        "lo": 10000000
+                      }
+                    }
+                  ]
+                }
+              },
+              "sub_invocations": []
+            }
+          ]
+        }
+      ]
+    ],
+    [],
     [
       [
         "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
@@ -189,7 +274,7 @@
                             "symbol": "correct_predictions"
                           },
                           "val": {
-                            "u32": 10
+                            "u32": 1
                           }
                         },
                         {
@@ -197,7 +282,7 @@
                             "symbol": "points"
                           },
                           "val": {
-                            "u32": 100
+                            "u32": 10
                           }
                         },
                         {
@@ -213,7 +298,7 @@
                             "symbol": "total_predictions"
                           },
                           "val": {
-                            "u32": 12
+                            "u32": 1
                           }
                         },
                         {
@@ -222,138 +307,6 @@
                           },
                           "val": {
                             "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDR4"
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "map": [
-                        {
-                          "key": {
-                            "symbol": "correct_predictions"
-                          },
-                          "val": {
-                            "u32": 8
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "points"
-                          },
-                          "val": {
-                            "u32": 80
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "rank"
-                          },
-                          "val": {
-                            "u32": 2
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "total_predictions"
-                          },
-                          "val": {
-                            "u32": 11
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "user"
-                          },
-                          "val": {
-                            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOLZM"
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "map": [
-                        {
-                          "key": {
-                            "symbol": "correct_predictions"
-                          },
-                          "val": {
-                            "u32": 5
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "points"
-                          },
-                          "val": {
-                            "u32": 50
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "rank"
-                          },
-                          "val": {
-                            "u32": 3
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "total_predictions"
-                          },
-                          "val": {
-                            "u32": 9
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "user"
-                          },
-                          "val": {
-                            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARQG5"
-                          }
-                        }
-                      ]
-                    },
-                    {
-                      "map": [
-                        {
-                          "key": {
-                            "symbol": "correct_predictions"
-                          },
-                          "val": {
-                            "u32": 3
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "points"
-                          },
-                          "val": {
-                            "u32": 30
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "rank"
-                          },
-                          "val": {
-                            "u32": 4
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "total_predictions"
-                          },
-                          "val": {
-                            "u32": 6
-                          }
-                        },
-                        {
-                          "key": {
-                            "symbol": "user"
-                          },
-                          "val": {
-                            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATYON"
                           }
                         }
                       ]
@@ -366,12 +319,157 @@
           "sub_invocations": []
         }
       ]
-    ]
+    ],
+    [],
+    [],
+    [
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+        {
+          "function": {
+            "contract_fn": {
+              "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+              "function_name": "update_leaderboard",
+              "args": [
+                {
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
+                },
+                {
+                  "u32": 1
+                },
+                {
+                  "vec": [
+                    {
+                      "map": [
+                        {
+                          "key": {
+                            "symbol": "correct_predictions"
+                          },
+                          "val": {
+                            "u32": 1
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "points"
+                          },
+                          "val": {
+                            "u32": 10
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "rank"
+                          },
+                          "val": {
+                            "u32": 1
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "total_predictions"
+                          },
+                          "val": {
+                            "u32": 1
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "user"
+                          },
+                          "val": {
+                            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDR4"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "sub_invocations": []
+        }
+      ]
+    ],
+    [],
+    [
+      [
+        "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+        {
+          "function": {
+            "contract_fn": {
+              "contract_address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+              "function_name": "update_leaderboard",
+              "args": [
+                {
+                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
+                },
+                {
+                  "u32": 2
+                },
+                {
+                  "vec": [
+                    {
+                      "map": [
+                        {
+                          "key": {
+                            "symbol": "correct_predictions"
+                          },
+                          "val": {
+                            "u32": 1
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "points"
+                          },
+                          "val": {
+                            "u32": 10
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "rank"
+                          },
+                          "val": {
+                            "u32": 1
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "total_predictions"
+                          },
+                          "val": {
+                            "u32": 1
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "user"
+                          },
+                          "val": {
+                            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDR4"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "sub_invocations": []
+        }
+      ]
+    ],
+    [],
+    []
   ],
   "ledger": {
     "protocol_version": 22,
     "sequence_number": 0,
-    "timestamp": 150,
+    "timestamp": 0,
     "network_id": "0000000000000000000000000000000000000000000000000000000000000000",
     "base_reserve": 0,
     "min_persistent_entry_ttl": 4096,
@@ -588,7 +686,7 @@
                                   "symbol": "correct_predictions"
                                 },
                                 "val": {
-                                  "u32": 10
+                                  "u32": 1
                                 }
                               },
                               {
@@ -596,7 +694,7 @@
                                   "symbol": "points"
                                 },
                                 "val": {
-                                  "u32": 100
+                                  "u32": 10
                                 }
                               },
                               {
@@ -612,7 +710,7 @@
                                   "symbol": "total_predictions"
                                 },
                                 "val": {
-                                  "u32": 12
+                                  "u32": 1
                                 }
                               },
                               {
@@ -621,138 +719,6 @@
                                 },
                                 "val": {
                                   "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDR4"
-                                }
-                              }
-                            ]
-                          },
-                          {
-                            "map": [
-                              {
-                                "key": {
-                                  "symbol": "correct_predictions"
-                                },
-                                "val": {
-                                  "u32": 8
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "points"
-                                },
-                                "val": {
-                                  "u32": 80
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "rank"
-                                },
-                                "val": {
-                                  "u32": 2
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "total_predictions"
-                                },
-                                "val": {
-                                  "u32": 11
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "user"
-                                },
-                                "val": {
-                                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAOLZM"
-                                }
-                              }
-                            ]
-                          },
-                          {
-                            "map": [
-                              {
-                                "key": {
-                                  "symbol": "correct_predictions"
-                                },
-                                "val": {
-                                  "u32": 5
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "points"
-                                },
-                                "val": {
-                                  "u32": 50
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "rank"
-                                },
-                                "val": {
-                                  "u32": 3
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "total_predictions"
-                                },
-                                "val": {
-                                  "u32": 9
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "user"
-                                },
-                                "val": {
-                                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARQG5"
-                                }
-                              }
-                            ]
-                          },
-                          {
-                            "map": [
-                              {
-                                "key": {
-                                  "symbol": "correct_predictions"
-                                },
-                                "val": {
-                                  "u32": 3
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "points"
-                                },
-                                "val": {
-                                  "u32": 30
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "rank"
-                                },
-                                "val": {
-                                  "u32": 4
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "total_predictions"
-                                },
-                                "val": {
-                                  "u32": 6
-                                }
-                              },
-                              {
-                                "key": {
-                                  "symbol": "user"
-                                },
-                                "val": {
-                                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATYON"
                                 }
                               }
                             ]
@@ -773,7 +739,122 @@
                         "symbol": "updated_at"
                       },
                       "val": {
-                        "u64": 150
+                        "u64": 0
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            "ext": "v0"
+          },
+          518400
+        ]
+      ],
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "Leaderboard"
+                },
+                {
+                  "u32": 2
+                }
+              ]
+            },
+            "durability": "persistent"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                "key": {
+                  "vec": [
+                    {
+                      "symbol": "Leaderboard"
+                    },
+                    {
+                      "u32": 2
+                    }
+                  ]
+                },
+                "durability": "persistent",
+                "val": {
+                  "map": [
+                    {
+                      "key": {
+                        "symbol": "entries"
+                      },
+                      "val": {
+                        "vec": [
+                          {
+                            "map": [
+                              {
+                                "key": {
+                                  "symbol": "correct_predictions"
+                                },
+                                "val": {
+                                  "u32": 1
+                                }
+                              },
+                              {
+                                "key": {
+                                  "symbol": "points"
+                                },
+                                "val": {
+                                  "u32": 10
+                                }
+                              },
+                              {
+                                "key": {
+                                  "symbol": "rank"
+                                },
+                                "val": {
+                                  "u32": 1
+                                }
+                              },
+                              {
+                                "key": {
+                                  "symbol": "total_predictions"
+                                },
+                                "val": {
+                                  "u32": 1
+                                }
+                              },
+                              {
+                                "key": {
+                                  "symbol": "user"
+                                },
+                                "val": {
+                                  "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDR4"
+                                }
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "season_id"
+                      },
+                      "val": {
+                        "u32": 2
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "updated_at"
+                      },
+                      "val": {
+                        "u64": 0
                       }
                     }
                   ]
@@ -861,7 +942,7 @@
                       "val": {
                         "i128": {
                           "hi": 0,
-                          "lo": 50000000
+                          "lo": 10000000
                         }
                       }
                     },
@@ -879,6 +960,117 @@
                       },
                       "val": {
                         "u64": 100
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "top_winner"
+                      },
+                      "val": "void"
+                    }
+                  ]
+                }
+              }
+            },
+            "ext": "v0"
+          },
+          518400
+        ]
+      ],
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "Season"
+                },
+                {
+                  "u32": 2
+                }
+              ]
+            },
+            "durability": "persistent"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM",
+                "key": {
+                  "vec": [
+                    {
+                      "symbol": "Season"
+                    },
+                    {
+                      "u32": 2
+                    }
+                  ]
+                },
+                "durability": "persistent",
+                "val": {
+                  "map": [
+                    {
+                      "key": {
+                        "symbol": "end_time"
+                      },
+                      "val": {
+                        "u64": 300
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "is_active"
+                      },
+                      "val": {
+                        "bool": false
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "is_finalized"
+                      },
+                      "val": {
+                        "bool": false
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "participant_count"
+                      },
+                      "val": {
+                        "u32": 0
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "reward_pool"
+                      },
+                      "val": {
+                        "i128": {
+                          "hi": 0,
+                          "lo": 10000000
+                        }
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "season_id"
+                      },
+                      "val": {
+                        "u32": 2
+                      }
+                    },
+                    {
+                      "key": {
+                        "symbol": "start_time"
+                      },
+                      "val": {
+                        "u64": 201
                       }
                     },
                     {
@@ -926,7 +1118,7 @@
                 },
                 "durability": "persistent",
                 "val": {
-                  "u32": 1
+                  "u32": 2
                 }
               }
             },
@@ -968,6 +1160,9 @@
                   "vec": [
                     {
                       "u32": 1
+                    },
+                    {
+                      "u32": 2
                     }
                   ]
                 }
@@ -1032,6 +1227,39 @@
                 "key": {
                   "ledger_key_nonce": {
                     "nonce": 1033654523790656264
+                  }
+                },
+                "durability": "temporary",
+                "val": "void"
+              }
+            },
+            "ext": "v0"
+          },
+          6311999
+        ]
+      ],
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+            "key": {
+              "ledger_key_nonce": {
+                "nonce": 1194852393571756375
+              }
+            },
+            "durability": "temporary"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+                "key": {
+                  "ledger_key_nonce": {
+                    "nonce": 1194852393571756375
                   }
                 },
                 "durability": "temporary",
@@ -1131,6 +1359,105 @@
                 "key": {
                   "ledger_key_nonce": {
                     "nonce": 4837995959683129791
+                  }
+                },
+                "durability": "temporary",
+                "val": "void"
+              }
+            },
+            "ext": "v0"
+          },
+          6311999
+        ]
+      ],
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+            "key": {
+              "ledger_key_nonce": {
+                "nonce": 5806905060045992000
+              }
+            },
+            "durability": "temporary"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+                "key": {
+                  "ledger_key_nonce": {
+                    "nonce": 5806905060045992000
+                  }
+                },
+                "durability": "temporary",
+                "val": "void"
+              }
+            },
+            "ext": "v0"
+          },
+          6311999
+        ]
+      ],
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+            "key": {
+              "ledger_key_nonce": {
+                "nonce": 6277191135259896685
+              }
+            },
+            "durability": "temporary"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+                "key": {
+                  "ledger_key_nonce": {
+                    "nonce": 6277191135259896685
+                  }
+                },
+                "durability": "temporary",
+                "val": "void"
+              }
+            },
+            "ext": "v0"
+          },
+          6311999
+        ]
+      ],
+      [
+        {
+          "contract_data": {
+            "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+            "key": {
+              "ledger_key_nonce": {
+                "nonce": 8370022561469687789
+              }
+            },
+            "durability": "temporary"
+          }
+        },
+        [
+          {
+            "last_modified_ledger_seq": 0,
+            "data": {
+              "contract_data": {
+                "ext": "v0",
+                "contract": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4",
+                "key": {
+                  "ledger_key_nonce": {
+                    "nonce": 8370022561469687789
                   }
                 },
                 "durability": "temporary",
@@ -1253,7 +1580,7 @@
                       "val": {
                         "i128": {
                           "hi": 0,
-                          "lo": 50000000
+                          "lo": 20000000
                         }
                       }
                     },
@@ -1318,7 +1645,7 @@
                       "val": {
                         "i128": {
                           "hi": 0,
-                          "lo": 50000000
+                          "lo": 20000000
                         }
                       }
                     },
@@ -1391,7 +1718,7 @@
                       "val": {
                         "i128": {
                           "hi": 0,
-                          "lo": 50000000
+                          "lo": 0
                         }
                       }
                     },
@@ -1555,36 +1882,5 @@
       ]
     ]
   },
-  "events": [
-    {
-      "event": {
-        "ext": "v0",
-        "contract_id": "0000000000000000000000000000000000000000000000000000000000000001",
-        "type_": "contract",
-        "body": {
-          "v0": {
-            "topics": [
-              {
-                "symbol": "lead"
-              },
-              {
-                "symbol": "updtd"
-              }
-            ],
-            "data": {
-              "vec": [
-                {
-                  "u32": 1
-                },
-                {
-                  "u64": 150
-                }
-              ]
-            }
-          }
-        }
-      },
-      "failed_call": false
-    }
-  ]
+  "events": []
 }

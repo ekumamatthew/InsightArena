@@ -16,6 +16,8 @@ pub enum DataKey {
     UserList,
     /// Keyed by season_id. Stores the leaderboard rankings per season.
     Leaderboard(u32),
+    /// Singleton. Stores the list of season IDs that have snapshots available.
+    SnapshotSeasonList,
     /// Keyed by season number. Represents a season's metadata and schedule.
     Season(u32),
     /// Singleton. Stores the currently active season identifier.
