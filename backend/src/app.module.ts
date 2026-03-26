@@ -13,9 +13,7 @@ import { validate } from './config/env.validation';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { MarketsModule } from './markets/markets.module';
-import { NotificationsModule } from './notifications/notifications.module';
-import { CompetitionsModule } from './competitions/competitions.module';
-import { LeaderboardModule } from './leaderboard/leaderboard.module';
+import { PredictionsModule } from './predictions/predictions.module';
 
 @Module({
   imports: [
@@ -43,9 +41,7 @@ import { LeaderboardModule } from './leaderboard/leaderboard.module';
     AuthModule,
     UsersModule,
     MarketsModule,
-    NotificationsModule,
-    CompetitionsModule,
-    LeaderboardModule,
+    PredictionsModule,
     CommonModule,
   ],
 
