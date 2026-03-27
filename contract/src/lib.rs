@@ -7,6 +7,7 @@ pub mod errors;
 pub mod escrow;
 pub mod governance;
 pub mod invite;
+pub mod leaderboard;
 pub mod market;
 pub mod oracle;
 pub mod prediction;
@@ -442,6 +443,12 @@ impl InsightArenaContract {
         new_season_id: u32,
     ) -> Result<u32, InsightArenaError> {
         season::reset_season_points(&env, admin, new_season_id)
+    }
+
+    /// Season points for `user` in `season_id` (snapshot if finalized, else live profile when applicable).
+    /// Returns `0` for unknown users. Never panics.
+    pub fn get_user_season_points(env: Env, user: Address, season_id: u32) -> u32 {
+        leaderboard::get_user_season_points(&env, user, season_id)
     }
 
     // ── Reputation ────────────────────────────────────────────────────────────
