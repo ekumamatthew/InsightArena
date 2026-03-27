@@ -9,6 +9,7 @@ pub mod oracle;
 pub mod prediction;
 pub mod season;
 pub mod storage_types;
+pub mod ttl;
 
 pub use crate::config::Config;
 pub use crate::errors::InsightArenaError;
@@ -258,6 +259,15 @@ impl InsightArenaContract {
     ) -> Result<Symbol, InsightArenaError> {
         invite::generate_invite_code(env, creator, market_id, max_uses, expires_in_seconds)
         // ── Season / Leaderboard ────────────────────────────────────────────────
+    }
+
+    /// Redeem a private-market invite code and return the associated market id.
+    pub fn redeem_invite_code(
+        env: Env,
+        invitee: Address,
+        code: Symbol,
+    ) -> Result<u64, InsightArenaError> {
+        invite::redeem_invite_code(env, invitee, code)
     }
 
     /// List all season IDs which have snapshots available.

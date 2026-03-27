@@ -5,6 +5,7 @@ use crate::errors::InsightArenaError;
 use crate::escrow;
 use crate::season;
 use crate::storage_types::{DataKey, Market, Prediction, UserProfile};
+use crate::ttl;
 
 // ── TTL helpers ───────────────────────────────────────────────────────────────
 
@@ -17,11 +18,7 @@ fn bump_prediction(env: &Env, market_id: u64, predictor: &Address) {
 }
 
 fn bump_market(env: &Env, market_id: u64) {
-    env.storage().persistent().extend_ttl(
-        &DataKey::Market(market_id),
-        PERSISTENT_THRESHOLD,
-        PERSISTENT_BUMP,
-    );
+    ttl::extend_market_ttl(env, market_id);
 }
 
 fn bump_predictor_list(env: &Env, market_id: u64) {
@@ -33,11 +30,7 @@ fn bump_predictor_list(env: &Env, market_id: u64) {
 }
 
 fn bump_user(env: &Env, address: &Address) {
-    env.storage().persistent().extend_ttl(
-        &DataKey::User(address.clone()),
-        PERSISTENT_THRESHOLD,
-        PERSISTENT_BUMP,
-    );
+    ttl::extend_user_ttl(env, address);
 }
 
 // ── Event emission ────────────────────────────────────────────────────────────
@@ -204,6 +197,24 @@ pub fn submit_prediction(
     let outcome_valid = market.outcome_options.iter().any(|o| o == chosen_outcome);
     if !outcome_valid {
         return Err(InsightArenaError::InvalidOutcome);
+    }
+
+    if !market.is_public {
+        let allowlist: Vec<Address> = env
+            .storage()
+            .persistent()
+            .get(&DataKey::MarketAllowlist(market_id))
+            .unwrap_or_else(|| Vec::new(env));
+
+        if !allowlist.iter().any(|entry| entry == predictor) {
+            return Err(InsightArenaError::Unauthorized);
+        }
+
+        env.storage().persistent().extend_ttl(
+            &DataKey::MarketAllowlist(market_id),
+            PERSISTENT_THRESHOLD,
+            PERSISTENT_BUMP,
+        );
     }
 
     // ── Guard 5 & 6: stake_amount must be within [min_stake, max_stake] ───────

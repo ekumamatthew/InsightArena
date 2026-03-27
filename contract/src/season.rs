@@ -6,21 +6,14 @@ use crate::escrow;
 use crate::storage_types::{
     DataKey, LeaderboardEntry, LeaderboardSnapshot, RewardPayout, Season, UserProfile,
 };
+use crate::ttl;
 
 fn bump_season(env: &Env, season_id: u32) {
-    env.storage().persistent().extend_ttl(
-        &DataKey::Season(season_id),
-        PERSISTENT_THRESHOLD,
-        PERSISTENT_BUMP,
-    );
+    ttl::extend_season_ttl(env, season_id);
 }
 
 fn bump_leaderboard(env: &Env, season_id: u32) {
-    env.storage().persistent().extend_ttl(
-        &DataKey::Leaderboard(season_id),
-        PERSISTENT_THRESHOLD,
-        PERSISTENT_BUMP,
-    );
+    ttl::extend_season_ttl(env, season_id);
 }
 
 fn bump_season_count(env: &Env) {

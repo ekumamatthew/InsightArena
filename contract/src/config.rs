@@ -2,6 +2,7 @@ use soroban_sdk::{contracttype, Address, Env};
 
 use crate::errors::InsightArenaError;
 use crate::storage_types::DataKey;
+use crate::ttl;
 
 // ── TTL constants ─────────────────────────────────────────────────────────────
 // Assuming ~5 s per ledger:
@@ -36,9 +37,7 @@ pub struct Config {
 /// Extend the persistent TTL for the Config entry whenever it drops below
 /// `PERSISTENT_THRESHOLD`. Must be called on every read *and* every write.
 fn bump_config(env: &Env) {
-    env.storage()
-        .persistent()
-        .extend_ttl(&DataKey::Config, PERSISTENT_THRESHOLD, PERSISTENT_BUMP);
+    ttl::extend_config_ttl(env);
 }
 
 /// Load Config from persistent storage.

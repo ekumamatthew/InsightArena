@@ -24,6 +24,8 @@ pub enum DataKey {
     ActiveSeason,
     /// Keyed by code symbol. Maps an invite code to its underlying metadata.
     InviteCode(Symbol),
+    /// Keyed by market_id. Stores the set-like list of addresses approved for private markets.
+    MarketAllowlist(u64),
     /// Singleton. Holds global configuration for the platform.
     Config,
     /// Singleton. Tracks cumulative protocol fees accrued to treasury.
