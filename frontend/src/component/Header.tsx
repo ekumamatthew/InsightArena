@@ -6,7 +6,7 @@ export default function Header() {
   const navLinks = [
     { name: "Home", link: "/" },
     { name: "Events", link: "/events" },
-    { name: "Leaderboard", link: "/lead" },
+    { name: "Leaderboard", link: "/leaderboard" },
     { name: "Docs", link: "/docs" },
     { name: "Dashboard", link: "/dashboard" },
   ];
