@@ -84,4 +84,3 @@ pub fn extend_season_ttl(env: &Env, season_id: u32) {
         );
     }
 }
-

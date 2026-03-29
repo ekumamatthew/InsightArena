@@ -2,11 +2,7 @@ use soroban_sdk::testutils::{Address as _, Ledger as _};
 use soroban_sdk::{symbol_short, vec, Address, Env, String, Symbol};
 
 use insightarena_contract::market::CreateMarketParams;
-use insightarena_contract::{
-    InsightArenaContract,
-    InsightArenaContractClient,
-    InsightArenaError,
-};
+use insightarena_contract::{InsightArenaContract, InsightArenaContractClient, InsightArenaError};
 
 fn register_token(env: &Env) -> Address {
     let token_admin = Address::generate(env);
@@ -181,5 +177,8 @@ fn test_resolve_market_before_resolution_time() {
 
     // Do NOT advance time; attempt to resolve immediately
     let result = client.try_resolve_market(&oracle, &id, &symbol_short!("yes"));
-    assert!(matches!(result, Err(Ok(InsightArenaError::MarketStillOpen))));
+    assert!(matches!(
+        result,
+        Err(Ok(InsightArenaError::MarketStillOpen))
+    ));
 }

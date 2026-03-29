@@ -1,12 +1,12 @@
-use soroban_sdk::{symbol_short, Address, Env, Vec};
-use crate::leaderboard;
 use crate::config::{self, PERSISTENT_BUMP, PERSISTENT_THRESHOLD};
 use crate::errors::InsightArenaError;
 use crate::escrow;
+use crate::leaderboard;
 use crate::storage_types::{
     DataKey, LeaderboardEntry, LeaderboardSnapshot, RewardPayout, Season, UserProfile,
 };
 use crate::ttl;
+use soroban_sdk::{symbol_short, Address, Env, Vec};
 
 fn bump_season(env: &Env, season_id: u32) {
     ttl::extend_season_ttl(env, season_id);
@@ -399,7 +399,7 @@ pub fn update_leaderboard(
     }
 
     let updated_at = env.ledger().timestamp();
-    
+
     // Call the persistence layer in leaderboard.rs
     leaderboard::store_snapshot(
         env,

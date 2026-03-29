@@ -367,7 +367,8 @@ fn test_points_accumulate_across_markets() {
     );
 
     let profile = client.get_user_stats(&winner);
-    let expected_points = calculate_expected_points(50_000_000, 1, 1) + calculate_expected_points(30_000_000, 2, 2);
+    let expected_points =
+        calculate_expected_points(50_000_000, 1, 1) + calculate_expected_points(30_000_000, 2, 2);
 
     assert_eq!(profile.season_points, expected_points);
     assert_eq!(profile.total_winnings, first_payout + second_payout);

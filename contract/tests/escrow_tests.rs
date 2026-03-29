@@ -645,9 +645,18 @@ fn test_payout_with_zero_losers() {
     });
 
     let token_client = TokenClient::new(&env, &xlm_token);
-    assert_eq!(token_client.balance(&predictor_a), balance_a_before + stake_a);
-    assert_eq!(token_client.balance(&predictor_b), balance_b_before + stake_b);
-    assert_eq!(token_client.balance(&predictor_c), balance_c_before + stake_c);
+    assert_eq!(
+        token_client.balance(&predictor_a),
+        balance_a_before + stake_a
+    );
+    assert_eq!(
+        token_client.balance(&predictor_b),
+        balance_b_before + stake_b
+    );
+    assert_eq!(
+        token_client.balance(&predictor_c),
+        balance_c_before + stake_c
+    );
 
     let final_balance = env.as_contract(&client.address, || get_contract_balance(&env));
     assert_eq!(final_balance, 0);

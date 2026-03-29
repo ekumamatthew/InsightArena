@@ -55,6 +55,31 @@ pub fn calculate_swap_output(
 
 // ── Liquidity Management ──────────────────────────────────────────────────────
 
+/// Calculate LP tokens to mint for a deposit
+pub fn calculate_lp_tokens(
+    deposit_amount: i128,
+    total_liquidity: i128,
+    total_lp_supply: i128,
+) -> Result<i128, InsightArenaError> {
+    if deposit_amount <= 0 {
+        return Err(InsightArenaError::InvalidInput);
+    }
+
+    // First deposit: mint tokens equal to deposit
+    if total_lp_supply == 0 || total_liquidity == 0 {
+        return Ok(deposit_amount);
+    }
+
+    // Subsequent deposits: mint proportionally
+    let lp_tokens = deposit_amount
+        .checked_mul(total_lp_supply)
+        .ok_or(InsightArenaError::Overflow)?
+        .checked_div(total_liquidity)
+        .ok_or(InsightArenaError::Overflow)?;
+
+    Ok(lp_tokens)
+}
+
 // TODO: add_liquidity
 // TODO: remove_liquidity
 
@@ -97,5 +122,29 @@ mod tests {
         // Try: i128::MAX → Should return Overflow error
         let result = calculate_swap_output(i128::MAX, 1000, 1000, 30);
         assert_eq!(result, Err(InsightArenaError::Overflow));
+    }
+
+    #[test]
+    fn test_calculate_lp_tokens_first_deposit() {
+        // Deposit: 1000, Liquidity: 0, Supply: 0 → Expected: 1000
+        assert_eq!(calculate_lp_tokens(1000, 0, 0), Ok(1000));
+    }
+
+    #[test]
+    fn test_calculate_lp_tokens_second_deposit_equal() {
+        // Deposit: 1000, Liquidity: 1000, Supply: 1000 → Expected: 1000
+        assert_eq!(calculate_lp_tokens(1000, 1000, 1000), Ok(1000));
+    }
+
+    #[test]
+    fn test_calculate_lp_tokens_second_deposit_half() {
+        // Deposit: 500, Liquidity: 1000, Supply: 1000 → Expected: 500
+        assert_eq!(calculate_lp_tokens(500, 1000, 1000), Ok(500));
+    }
+
+    #[test]
+    fn test_calculate_lp_tokens_second_deposit_double() {
+        // Deposit: 2000, Liquidity: 1000, Supply: 1000 → Expected: 2000
+        assert_eq!(calculate_lp_tokens(2000, 1000, 1000), Ok(2000));
     }
 }

@@ -1,6 +1,6 @@
-use soroban_sdk::{Address, Env, Vec};
-use crate::storage_types::{DataKey, LeaderboardSnapshot, Season, UserProfile};
 use crate::errors::InsightArenaError;
+use crate::storage_types::{DataKey, LeaderboardSnapshot, Season, UserProfile};
+use soroban_sdk::{Address, Env, Vec};
 
 /// `stake_bonus = floor(stake_xlm / 10)` → `floor(stake_stroops / 10^8 stroops)`.
 const STROOPS_PER_STAKE_POINT: i128 = 100_000_000;
@@ -8,7 +8,10 @@ const STROOPS_PER_STAKE_POINT: i128 = 100_000_000;
 // --- Storage & Data Access ---
 
 /// Fetch a leaderboard snapshot for a specific season.
-pub fn get_leaderboard(env: &Env, season_id: u32) -> Result<LeaderboardSnapshot, InsightArenaError> {
+pub fn get_leaderboard(
+    env: &Env,
+    season_id: u32,
+) -> Result<LeaderboardSnapshot, InsightArenaError> {
     let key = DataKey::Leaderboard(season_id);
     env.storage()
         .persistent()
@@ -39,7 +42,7 @@ pub fn calculate_points(stake_amount: i128, correct: u32, total: u32) -> u32 {
     let sum = 100_i128.saturating_add(stake_bonus);
     let numer = sum.saturating_mul(correct).saturating_mul(2_i128);
     let res = numer / total;
-    
+
     if res < 0 {
         return 0;
     }
@@ -147,9 +150,9 @@ mod leaderboard_tests {
 
     #[test]
     fn get_user_season_points_unknown_season_and_user_returns_zero() {
+        use crate::InsightArenaContract;
         use soroban_sdk::testutils::Address as _;
         use soroban_sdk::{Address, Env};
-        use crate::InsightArenaContract;
 
         let env = Env::default();
         let contract_id = env.register(InsightArenaContract, ());
