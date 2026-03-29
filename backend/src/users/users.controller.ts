@@ -22,6 +22,8 @@ import {
   PaginatedPublicUserPredictionsResponse,
 } from './dto/list-user-predictions.dto';
 
+import { ListUserCompetitionsDto } from './dto/list-user-competitions.dto';
+
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -88,5 +90,16 @@ export class UsersController {
     @Query() query: ListUserPredictionsDto,
   ): Promise<PaginatedPublicUserPredictionsResponse> {
     return this.usersService.findPublicPredictionsByAddress(address, query);
+  }
+
+  @Get(':address/competitions')
+  @Public()
+  @ApiOperation({ summary: 'Get competitions a user has participated in' })
+  @ApiResponse({ status: 200, description: 'List of competitions' })
+  async getUserCompetitions(
+    @Param('address') address: string,
+    @Query() query: ListUserCompetitionsDto,
+  ) {
+    return this.usersService.findUserCompetitions(address, query);
   }
 }

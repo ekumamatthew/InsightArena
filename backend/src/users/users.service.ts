@@ -11,6 +11,12 @@ import {
 import { User } from './entities/user.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+import { CompetitionParticipant } from '../competitions/entities/competition-participant.entity';
+import {
+  ListUserCompetitionsDto,
+  UserCompetitionFilterStatus,
+} from './dto/list-user-competitions.dto';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -18,6 +24,9 @@ export class UsersService {
     private readonly usersRepository: Repository<User>,
     @InjectRepository(Prediction)
     private readonly predictionsRepository: Repository<Prediction>,
+
+    @InjectRepository(CompetitionParticipant)
+    private readonly participantsRepository: Repository<CompetitionParticipant>,
   ) {}
 
   async findAll(): Promise<User[]> {
@@ -73,7 +82,9 @@ export class UsersService {
     return { data, total, page, limit };
   }
 
-  private mapPublicPrediction(prediction: Prediction): PublicUserPredictionItem {
+  private mapPublicPrediction(
+    prediction: Prediction,
+  ): PublicUserPredictionItem {
     const outcome = this.computePublicOutcome(prediction);
 
     return {
@@ -121,5 +132,40 @@ export class UsersService {
     }
 
     return this.usersRepository.save(user);
+  }
+
+  async findUserCompetitions(address: string, dto: ListUserCompetitionsDto) {
+    const user = await this.findByAddress(address);
+    const { page = 1, limit = 20, status } = dto;
+    const skip = (page - 1) * limit;
+    const now = new Date();
+
+    const qb = this.participantsRepository
+      .createQueryBuilder('participant')
+      .leftJoinAndSelect('participant.competition', 'competition')
+      .where('participant.user_id = :userId', { userId: user.id });
+
+    if (status === UserCompetitionFilterStatus.Active) {
+      qb.andWhere('competition.end_time >= :now', { now });
+    } else if (status === UserCompetitionFilterStatus.Completed) {
+      qb.andWhere('competition.end_time < :now', { now });
+    }
+
+    const [items, total] = await qb
+      .orderBy('competition.end_time', 'DESC')
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    const data = items.map((p) => ({
+      id: p.competition.id,
+      title: p.competition.title,
+      rank: p.rank,
+      score: p.score,
+      end_time: p.competition.end_time,
+      status: p.competition.end_time < now ? 'completed' : 'active',
+    }));
+
+    return { data, total, page, limit };
   }
 }
