@@ -13,6 +13,11 @@ import {
   OutcomeDistributionDto,
 } from './dto/market-analytics.dto';
 import { MarketHistoryResponseDto } from './dto/market-history.dto';
+import {
+  UserTrendsDto,
+  TrendDataPointDto,
+  CategoryPerformanceDto,
+} from './dto/user-trends.dto';
 
 /** Tier thresholds: Bronze < 200, Silver < 500, Gold < 1000, Platinum ≥ 1000 */
 export function predictorTierFromReputation(reputationScore: number): string {
@@ -254,5 +259,143 @@ export class AnalyticsService {
     });
 
     await this.marketHistoryRepository.save(snapshot);
+  }
+
+  /**
+   * Get user performance trends over time
+   */
+  async getUserTrends(address: string): Promise<UserTrendsDto> {
+    const user = await this.usersRepository.findOne({
+      where: { stellar_address: address },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with address ${address} not found`);
+    }
+
+    const predictions = await this.predictionsRepository.find({
+      where: { user: { id: user.id } },
+      relations: ['market'],
+      order: { submitted_at: 'ASC' },
+    });
+
+    const accuracyTrend = this.computeAccuracyTrend(predictions);
+    const volumeTrend = this.computeVolumeTrend(predictions);
+    const profitLossTrend = this.computeProfitLossTrend(predictions);
+    const categoryPerformance = this.computeCategoryPerformance(predictions);
+
+    const bestCategory = categoryPerformance.reduce((best, current) =>
+      current.accuracy_rate > (best?.accuracy_rate ?? 0) ? current : best,
+    );
+
+    const worstCategory = categoryPerformance.reduce((worst, current) =>
+      current.accuracy_rate < (worst?.accuracy_rate ?? 100) ? current : worst,
+    );
+
+    return {
+      address,
+      accuracy_trend: accuracyTrend,
+      prediction_volume_trend: volumeTrend,
+      profit_loss_trend: profitLossTrend,
+      category_performance: categoryPerformance,
+      best_category: bestCategory || null,
+      worst_category: worstCategory || null,
+    };
+  }
+
+  private computeAccuracyTrend(predictions: Prediction[]): TrendDataPointDto[] {
+    const trend: TrendDataPointDto[] = [];
+    let correct = 0;
+    let total = 0;
+
+    predictions.forEach((p) => {
+      if (p.market?.is_resolved) {
+        total++;
+        if (p.market.resolved_outcome === p.chosen_outcome) {
+          correct++;
+        }
+        trend.push({
+          timestamp: p.submitted_at,
+          value: total > 0 ? Math.round((correct / total) * 10000) / 100 : 0,
+        });
+      }
+    });
+
+    return trend;
+  }
+
+  private computeVolumeTrend(predictions: Prediction[]): TrendDataPointDto[] {
+    const trend: TrendDataPointDto[] = [];
+    let count = 0;
+
+    predictions.forEach((p) => {
+      count++;
+      trend.push({
+        timestamp: p.submitted_at,
+        value: count,
+      });
+    });
+
+    return trend;
+  }
+
+  private computeProfitLossTrend(predictions: Prediction[]): TrendDataPointDto[] {
+    const trend: TrendDataPointDto[] = [];
+    let cumulativePnL = 0n;
+
+    predictions.forEach((p) => {
+      if (p.market?.is_resolved) {
+        const stake = BigInt(p.stake_amount_stroops || 0);
+        const payout = BigInt(p.payout_amount_stroops || 0);
+        cumulativePnL += payout - stake;
+
+        trend.push({
+          timestamp: p.submitted_at,
+          value: Number(cumulativePnL),
+        });
+      }
+    });
+
+    return trend;
+  }
+
+  private computeCategoryPerformance(
+    predictions: Prediction[],
+  ): CategoryPerformanceDto[] {
+    const categoryMap = new Map<
+      string,
+      { correct: number; total: number; pnl: bigint }
+    >();
+
+    predictions.forEach((p) => {
+      const category = p.market?.category || 'Unknown';
+      const current = categoryMap.get(category) || {
+        correct: 0,
+        total: 0,
+        pnl: 0n,
+      };
+
+      if (p.market?.is_resolved) {
+        current.total++;
+        if (p.market.resolved_outcome === p.chosen_outcome) {
+          current.correct++;
+        }
+        const stake = BigInt(p.stake_amount_stroops || 0);
+        const payout = BigInt(p.payout_amount_stroops || 0);
+        current.pnl += payout - stake;
+      }
+
+      categoryMap.set(category, current);
+    });
+
+    return Array.from(categoryMap.entries()).map(([category, stats]) => ({
+      category,
+      accuracy_rate:
+        stats.total > 0
+          ? Math.round((stats.correct / stats.total) * 10000) / 100
+          : 0,
+      prediction_count: stats.total,
+      profit_loss_stroops: stats.pnl.toString(),
+    }));
   }
 }
