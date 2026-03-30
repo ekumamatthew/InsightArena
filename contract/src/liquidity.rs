@@ -52,6 +52,7 @@ pub fn calculate_swap_output(
 // ── Helper Functions ──────────────────────────────────────────────────────────
 
 /// Calculate liquidity value for LP tokens (for withdrawal)
+#[allow(dead_code)]
 pub fn calculate_liquidity_value(
     lp_tokens: i128,
     total_liquidity: i128,
