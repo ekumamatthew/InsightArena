@@ -9,9 +9,14 @@ import {
   PublicUserPredictionItem,
 } from './dto/list-user-predictions.dto';
 import { User } from './entities/user.entity';
+import { UserPreferences } from './entities/user-preferences.entity';
 import { Market } from '../markets/entities/market.entity';
 import { Notification } from '../notifications/entities/notification.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  UpdateUserPreferencesDto,
+  UserPreferencesResponseDto,
+} from './dto/user-preferences.dto';
 
 import { CompetitionParticipant } from '../competitions/entities/competition-participant.entity';
 import {
@@ -31,6 +36,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(UserPreferences)
+    private readonly preferencesRepository: Repository<UserPreferences>,
     @InjectRepository(Prediction)
     private readonly predictionsRepository: Repository<Prediction>,
     @InjectRepository(Market)
@@ -295,6 +302,59 @@ export class UsersService {
         score: c.score,
       })),
       exported_at: new Date().toISOString(),
+    };
+  }
+
+  async getOrCreatePreferences(
+    userId: string,
+  ): Promise<UserPreferences> {
+    let prefs = await this.preferencesRepository.findOne({
+      where: { userId },
+    });
+
+    if (!prefs) {
+      prefs = this.preferencesRepository.create({ userId });
+      prefs = await this.preferencesRepository.save(prefs);
+    }
+
+    return prefs;
+  }
+
+  async updatePreferences(
+    userId: string,
+    dto: UpdateUserPreferencesDto,
+  ): Promise<UserPreferencesResponseDto> {
+    const prefs = await this.getOrCreatePreferences(userId);
+
+    if (dto.email_notifications !== undefined) {
+      prefs.email_notifications = dto.email_notifications;
+    }
+    if (dto.market_resolution_notifications !== undefined) {
+      prefs.market_resolution_notifications =
+        dto.market_resolution_notifications;
+    }
+    if (dto.competition_notifications !== undefined) {
+      prefs.competition_notifications = dto.competition_notifications;
+    }
+    if (dto.leaderboard_notifications !== undefined) {
+      prefs.leaderboard_notifications = dto.leaderboard_notifications;
+    }
+    if (dto.marketing_emails !== undefined) {
+      prefs.marketing_emails = dto.marketing_emails;
+    }
+
+    const updated = await this.preferencesRepository.save(prefs);
+
+    return {
+      id: updated.id,
+      email_notifications: updated.email_notifications,
+      market_resolution_notifications:
+        updated.market_resolution_notifications,
+      competition_notifications: updated.competition_notifications,
+      leaderboard_notifications: updated.leaderboard_notifications,
+      marketing_emails: updated.marketing_emails,
+      created_at: updated.created_at,
+      updated_at: updated.updated_at,
     };
   }
 }

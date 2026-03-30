@@ -16,6 +16,10 @@ import { UsersService } from './users.service';
 import { PublicUserDto } from './dto/public-user.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import {
+  UpdateUserPreferencesDto,
+  UserPreferencesResponseDto,
+} from './dto/user-preferences.dto';
 import { User } from './entities/user.entity';
 import {
   ListUserPredictionsDto,
@@ -127,5 +131,23 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'User data exported as JSON' })
   async exportData(@CurrentUser() user: User) {
     return await this.usersService.exportUserData(user.id);
+  }
+
+  @Patch('me/preferences')
+  @UsePipes(
+    new ValidationPipe({ whitelist: true, forbidNonWhitelisted: false }),
+  )
+  @ApiOperation({ summary: 'Update user notification preferences' })
+  @ApiResponse({
+    status: 200,
+    description: 'Preferences updated successfully',
+    type: UserPreferencesResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async updatePreferences(
+    @CurrentUser() user: User,
+    @Body() dto: UpdateUserPreferencesDto,
+  ): Promise<UserPreferencesResponseDto> {
+    return this.usersService.updatePreferences(user.id, dto);
   }
 }

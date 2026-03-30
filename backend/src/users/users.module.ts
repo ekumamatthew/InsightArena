@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
+import { UserPreferences } from './entities/user-preferences.entity';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { Prediction } from '../predictions/entities/prediction.entity';
@@ -12,6 +13,7 @@ import { Notification } from '../notifications/entities/notification.entity';
   imports: [
     TypeOrmModule.forFeature([
       User,
+      UserPreferences,
       Prediction,
       CompetitionParticipant,
       Market,
